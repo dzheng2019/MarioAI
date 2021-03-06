@@ -1,12 +1,10 @@
-Mario AI
+# Mario AI
 
-Members: Chanmi Oh, Oleksandr Litus, David Zheng
+**Members:** Chanmi Oh, Oleksandr Litus, David Zheng
 Why 3? → While we hope to use reinforcement learning skills from class, we would like to delve deeper into neural networks. For example, evolutionary neural networks or neuroevolution (1, 2, 3). Higher number of people will give us flexibility to distribute work evenly when we try to implement more advanced techniques.
 
-olitus
-chanmioh
 
-Problem Statement:
+**Problem Statement:**
 Develop an AI using reinforcement learning for Mario (better source, 1).
 We want the AI to take in a game state and output the next best action from there, based on factors such as obstacles, enemies, and other environment elements. The basic goal of the algorithm should be to solve a Mario level, but we would also like to add additional goals later, such as score or time.
 
