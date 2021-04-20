@@ -82,4 +82,4 @@ if __name__ == '__main__':
     model.set_model_params(params)
     # print(model.dense4)
     print(model.variance1)
-    print(model.predict([random.random()*2-1  for _ in range(0,12)]))
+    print(model.predict([random.random()*2-1 for _ in range(0,12)]))
