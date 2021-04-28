@@ -28,17 +28,18 @@ save_freq = 1000
 # policy_right = Model(mlp.games['slimevolleylite'])
 # param_count = policy_left.param_count
 
-param_count = ComplexModel().param_count
+
+modeltype = ComplexModel
+
+policy_left = ComplexModel()
+policy_right = ComplexModel()
+
+param_count = modeltype().param_count
 print("Number of parameters of the neural net policy:", param_count)
 
 # store our population here
-population = np.random.normal(size=(population_size, param_count)) * 0.5 # each row is an agent.
-agents = []
+population = np.random.normal(size=(population_size, param_count)) * 0.5
 
-for weights in population:
-    agent = ComplexModel()
-    agent.set_model_params(weights)
-    agents.append(agent)
     
 winning_streak = [0] * population_size # store the number of wins for this agent (including mutated ones)
 
@@ -48,31 +49,33 @@ env.seed(random_seed)
 np.random.seed(random_seed)
 
 history = []
+stats = pd.DataFrame(columns=['tournament', 'best_winning_streak','mean_duration','stdev'])
+
 for tournament in range(1, total_tournaments+1):
-  m, n = np.random.choice(population_size, 2, replace=False)
-  policy_left = agents[m]
-  policy_right= agents[n]
+    m, n = np.random.choice(population_size, 2, replace=False)
+
+  policy_left.set_model_params(population[m])
+  policy_right.set_model_params(population[n])
+
   # the match between the mth and nth member of the population
-  if (tournament % 1000 == 0):
-    score, length = rollout(env, policy_right, policy_left, render_mode=True)
-  else:
-    score, length = rollout(env, policy_right, policy_left)
+  score, length = rollout(env, policy_right, policy_left)
 
   history.append(length)
+
   # if score is positive, it means policy_right won.
   if score == 0: # if the game is tied, add noise to the left agent.
     population[m] += np.random.normal(size=param_count) * 0.1
-    agents[m].set_model_params(population[m])
+
   if score > 0:
     population[m] = population[n] + np.random.normal(size=param_count) * 0.1
-    agents[m].set_model_params(population[m])
     winning_streak[m] = winning_streak[n]
     winning_streak[n] += 1
+
   if score < 0:
     population[n] = population[m] + np.random.normal(size=param_count) * 0.1
-    agents[n].set_model_params(population[n])
     winning_streak[n] = winning_streak[m]
     winning_streak[m] += 1
+
     
   if (tournament ) % 100 == 0:
     record_holder = np.argmax(winning_streak)
@@ -82,20 +85,30 @@ for tournament in range(1, total_tournaments+1):
           "mean_duration", np.mean(history),
           "stdev:", np.std(history),
          )
+    row = [tournament, record, np.mean(history),np.std(history)]
+    stats.loc[len(stats.index)] = row
     history = []
-    
-record_holder = np.argmax(winning_streak)
-best_player = population[record_holder]
-policy_left.set_model_params(population[m])
+  
+  # Save best every 1000 games
+  if (tournament) & 1000 == 0:
+    record_holder = np.argmax(winning_streak)
+    best_player = population[record_holder]
+    best_player.save(f'models/tournament{tournament}.npy')
+
+stats.to_csv('stats.csv')
+
+# record_holder = np.argmax(winning_streak)
+# best_player = population[record_holder]
+# policy_left.set_model_params(population[m])
 
 
-env = gym.make("SlimeVolleySurvivalNoFrameskip-v0")
-obs = env.reset()
+# env = gym.make("SlimeVolleySurvivalNoFrameskip-v0")
+# obs = env.reset()
 
-while True:    
-    action = policy_left.predict(obs)
-    obs, reward, done, info = env.step(action)
-    sleep(0.02)
-    env.render()
-    if done:
-      obs = env.reset()
+# while True:    
+#     action = policy_left.predict(obs)
+#     obs, reward, done, info = env.step(action)
+#     sleep(0.02)
+#     env.render()
+#     if done:
+#       obs = env.reset()
