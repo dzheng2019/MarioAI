@@ -69,10 +69,8 @@ for tournament in range(1, total_tournaments+1):
   policy_left = agents[left]
   policy_right= agents[right]
   # the match between the mth and nth member of the population
-  if (tournament % 1000 == 0):
-    score, length = rollout(env, policy_right, policy_left, render_mode=True)
-  else:
-    score, length = rollout(env, policy_right, policy_left)
+
+  score, length = rollout(env, policy_right, policy_left)
 
   history.append(length)
 

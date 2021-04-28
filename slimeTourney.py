@@ -21,15 +21,7 @@ import pandas as pd
 random_seed = 612
 population_size = 128
 total_tournaments = 250000
-# total_tournaments = 50001
 save_freq = 1000
-
-# Create two instances of a feed forward policy we may need later.
-
-# policy_left = Model(mlp.games['slimevolleylite'])
-# policy_right = Model(mlp.games['slimevolleylite'])
-# param_count = policy_left.param_count
-
 
 modeltype = ComplexModel
 
@@ -100,19 +92,3 @@ for tournament in range(1, total_tournaments+1):
     np.save(f'complex_models/tournament{tournament}.npy',best_player)
   
 stats.to_csv('stats.csv')
-
-# record_holder = np.argmax(winning_streak)
-# best_player = population[record_holder]
-# policy_left.set_model_params(population[m])
-
-
-# env = gym.make("SlimeVolleySurvivalNoFrameskip-v0")
-# obs = env.reset()
-
-# while True:    
-#     action = policy_left.predict(obs)
-#     obs, reward, done, info = env.step(action)
-#     sleep(0.02)
-#     env.render()
-#     if done:
-#       obs = env.reset()
