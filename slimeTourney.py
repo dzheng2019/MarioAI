@@ -15,11 +15,13 @@ from time import sleep
 from pyglet.window import key
 import itertools
 import math
+import pandas as pd
 
 # Settings
 random_seed = 612
 population_size = 128
-total_tournaments = 100000
+total_tournaments = 250000
+# total_tournaments = 50001
 save_freq = 1000
 
 # Create two instances of a feed forward policy we may need later.
@@ -31,8 +33,8 @@ save_freq = 1000
 
 modeltype = ComplexModel
 
-policy_left = ComplexModel()
-policy_right = ComplexModel()
+policy_left = modeltype()
+policy_right = modeltype()
 
 param_count = modeltype().param_count
 print("Number of parameters of the neural net policy:", param_count)
@@ -52,7 +54,7 @@ history = []
 stats = pd.DataFrame(columns=['tournament', 'best_winning_streak','mean_duration','stdev'])
 
 for tournament in range(1, total_tournaments+1):
-    m, n = np.random.choice(population_size, 2, replace=False)
+  m, n = np.random.choice(population_size, 2, replace=False)
 
   policy_left.set_model_params(population[m])
   policy_right.set_model_params(population[n])
@@ -77,7 +79,7 @@ for tournament in range(1, total_tournaments+1):
     winning_streak[m] += 1
 
     
-  if (tournament ) % 100 == 0:
+  if (tournament ) % 1000 == 0:
     record_holder = np.argmax(winning_streak)
     record = winning_streak[record_holder]
     print("tournament:", tournament,
@@ -90,11 +92,13 @@ for tournament in range(1, total_tournaments+1):
     history = []
   
   # Save best every 1000 games
-  if (tournament) & 1000 == 0:
+  if (tournament) % 25000 == 0:
+    print("Saving Best")
     record_holder = np.argmax(winning_streak)
     best_player = population[record_holder]
-    best_player.save(f'models/tournament{tournament}.npy')
-
+    best_player = np.array(best_player)
+    np.save(f'complex_models/tournament{tournament}.npy',best_player)
+  
 stats.to_csv('stats.csv')
 
 # record_holder = np.argmax(winning_streak)

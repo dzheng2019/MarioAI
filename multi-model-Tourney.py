@@ -108,7 +108,7 @@ for tournament in range(1, total_tournaments+1):
     winning_streak[right] = winning_streak[left]
     winning_streak[left] += 1
     
-  if (tournament ) % 100 == 0:
+  if (tournament ) % 1000 == 0:
     record_holder = np.argmax(winning_streak)
     record = winning_streak[record_holder]
     complex_count = 0
@@ -129,12 +129,14 @@ for tournament in range(1, total_tournaments+1):
     history = []
 
   # Save best every 1000 games
-  if (tournament) & 1000 == 0:
+  if (tournament) & 25000 == 0:
     record_holder = np.argmax(winning_streak)
     best_player = population[record_holder]
-    best_player.save(f'models/tournament{tournament}.npy')
+    best_player = np.array(best_player)
+    np.save(f'models/tournament{tournament}.npy',best_player)
 
 stats.to_csv('stats.csv')
+
 # record_holder = np.argmax(winning_streak)
 # best_player = population[record_holder]
 # policy_left.set_model_params(population[m])
