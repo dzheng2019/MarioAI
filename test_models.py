@@ -33,41 +33,41 @@ complex_rec = 0
 simple_rec = 0
 t = 0
 history = []
-while True:
-    done = False
-    score, length = rollout(env, complex_pol, simple_pol)
-    if score > 0:
-        complex_rec +=1
-    if score < 0:
-        simple_rec +=1
-    history.append(length)
-    if t % 100 == 0:
-        print(t)
-        print('Complex', complex_rec)
-        print('Simple', simple_rec)
-        print('Avg Time', np.average(history))
-        print('STD Time', np.std(history))
-    t+=1
+# while True:
+#     done = False
+#     score, length = rollout(env, complex_pol, simple_pol)
+#     if score > 0:
+#         complex_rec +=1
+#     if score < 0:
+#         simple_rec +=1
+#     history.append(length)
+#     if t % 100 == 0:
+#         print(t)
+#         print('Complex', complex_rec)
+#         print('Simple', simple_rec)
+#         print('Avg Time', np.average(history))
+#         print('STD Time', np.std(history))
+#     t+=1
 
 viewer.close()
 env.close()
 
 
 
-# while True:
-#     action0 = policy0.predict(obs0)
-#     action1 = policy1.predict(obs1) 
+while True:
+    action0 = complex_pol.predict(obs0)
+    action1 = simple_pol.predict(obs1) 
 
-#     # left is policy, or the simple model
-#     #                                   right,   left 
-#     obs0, reward, done, info = env.step(defaultAction, action0)
-#     obs1 = info['otherObs']
+    # left is policy, or the simple model
+    #                                   right,   left 
+    obs0, reward, done, info = env.step(defaultAction, action0)
+    obs1 = info['otherObs']
     
-#     # 1 if right wins
-#     # -1 if left wins
-#     print(reward)
-#     sleep(0.01)
-#     env.render()
+    # 1 if right wins
+    # -1 if left wins
+    print(reward)
+    sleep(0.01)
+    env.render()
 
-#     if done:
-#         obs = env.reset()
+    if done:
+        obs = env.reset()
