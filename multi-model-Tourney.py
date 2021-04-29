@@ -127,13 +127,13 @@ for tournament in range(1, total_tournaments+1):
     history = []
 
   # Save best every 1000 games
-  if (tournament) & 25000 == 0:
+  if (tournament) % 25000 == 0:
     record_holder = np.argmax(winning_streak)
     best_player = population[record_holder]
     best_player = np.array(best_player)
     np.save(f'models/tournament{tournament}.npy',best_player)
 
-stats.to_csv('stats.csv')
+stats.to_csv('stats_both.csv')
 
 # record_holder = np.argmax(winning_streak)
 # best_player = population[record_holder]
