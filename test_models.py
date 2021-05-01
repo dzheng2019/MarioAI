@@ -15,13 +15,14 @@ import pandas as pd
 
 env = gym.make("SlimeVolley-v0")
 
-genes0 = np.load('complex_models/tournament250000.npy').tolist()
-complex_pol = ComplexModel()
+genes0 = np.load('simple_models/tournament250000.npy').tolist()
+complex_pol =  Model(mlp.games['slimevolleylite'])
 complex_pol.set_model_params(genes0)
 
-genes1 = np.load('simple_models/tournament250000.npy').tolist()
-simple_pol = Model(mlp.games['slimevolleylite'])
-simple_pol.set_model_params(genes1)
+# genes1 = np.load('friendly_on_simple_model/agents/simple_friendly_agent_N10.npy').tolist()
+# simple_pol = Model(mlp.games['slimevolleylite'])
+simple_pol = slimevolleygym.BaselinePolicy()
+# simple_pol.set_model_params(genes1)
 
 obs0 = env.reset()
 obs1 = obs0 # same observation at the very beginning for the other 
@@ -31,9 +32,9 @@ defaultAction=[0,0,0]
 
 complex_rec = 0
 simple_rec = 0
-t = 0
+t = 1
 history = []
-while True:
+while t <= 500:
     done = False
     score, length = rollout(env, complex_pol, simple_pol)
     if score > 0:
